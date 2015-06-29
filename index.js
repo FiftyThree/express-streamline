@@ -156,8 +156,15 @@ if (streamlineGlobal) {
         var origAppHandle = this.handle;
 
         this.handle = function () {
+            // ensure the request starts with a clean context
             streamlineGlobal.context = {};
-            return origAppHandle.apply(this, arguments);
+
+            var res = origAppHandle.apply(this, arguments);
+
+            // clear the context after the request just to be safe
+            streamlineGlobal.context = {};
+
+            return res;
         };
 
         return origProtoInit.apply(this, arguments)

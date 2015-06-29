@@ -1,6 +1,7 @@
 var assert = require('assert');
 var app = require('./example');
 var req = require('supertest');
+var streamlineGlobal = require('streamline/lib/globals');
 
 exports['express-streamline'] = {
 
@@ -98,6 +99,16 @@ exports['express-streamline'] = {
             .expect(200)
             .expect({})
             .end(next)
+    },
+
+    'should clear global streamline context when request completes': function (next) {
+        req(app)
+            .get('/global?global=foo')
+            .expect(200)
+            .expect({value:'foo'})
+            .end(next)
+
+        assert.deepEqual(streamlineGlobal.context, {})
     }
 
 };
